@@ -33,9 +33,9 @@ func main() {
 	}
 	tools.Check(scanner.Err())
 	if *syncyes {
-		logic.SyncScan(urls, *multipleFiles)
+		logic.SyncScan(urls)
 	} else {
-		logic.AsyncScan(urls, *multipleFiles)
+		logic.AsyncScan(urls)
 	}
 
 }
