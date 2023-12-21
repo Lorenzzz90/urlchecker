@@ -9,3 +9,5 @@
 1. prevedere un flag che mi decida se creare un file per ogni url o un file globale per tutti gli url
 1. creare un file diverso per ogni giorno che il programma gira (oggi creare file con prefisso `2023_12_18`, domani `2023_12_19`)
 1. tutto quello che non Ã¨ specificato, decidetelo voi!
+
+// TODO: expand this file and provide the user with detailed information on how to run the program.
