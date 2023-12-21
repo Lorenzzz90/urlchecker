@@ -1,14 +1,17 @@
 package logic
 
 import (
-	"Lorenzzz90/urlchecker/tools"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
+
+	"Lorenzzz90/urlchecker/tools"
 )
 
 func SyncScan(urls []string, outputMode byte) {
+	// FIXME: lot of duplicated logic.
+	// the only thing that changes here is the output destination. Try to shorten this code.
 	if outputMode == 'c' {
 		for s := range urls {
 			resp, err := http.Get(urls[s])

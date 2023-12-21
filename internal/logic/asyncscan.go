@@ -1,18 +1,21 @@
 package logic
 
 import (
-	"Lorenzzz90/urlchecker/tools"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
+
+	"Lorenzzz90/urlchecker/tools"
 )
 
 func AsyncScan(urls []string, outputMode byte) {
 	done := make(chan bool, len(urls))
 	var writeFile *os.File
 	var err error
+	// FIXME: you used an "if", "elseif", but the "else"?
 	if outputMode == 'd' {
+		// FIXME: you MUST defer the close func on the file handle.
 		writeFile, err = os.Create(tools.Today() + ".txt")
 		tools.Check(err)
 	} else if outputMode == 'm' {
@@ -27,7 +30,6 @@ func AsyncScan(urls []string, outputMode byte) {
 	for i := 0; i < len(urls); i++ {
 		<-done
 	}
-
 }
 
 func scanUrl(done chan bool, url string, outputMode byte, writeFile *os.File) {
