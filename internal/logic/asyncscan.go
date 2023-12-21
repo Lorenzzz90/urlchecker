@@ -8,21 +8,21 @@ import (
 )
 
 func AsyncScan(urls []string) {
-	urlsChannel := make(chan string, len(urls))
 	done := make(chan bool, len(urls))
 	for i := 0; i < len(urls); i++ {
-		urlsChannel <- urls[i]
+		go scanUrl(done, urls[i])
 	}
 	for i := 0; i < len(urls); i++ {
-		go scanUrl(done, urlsChannel)
 		<-done
 	}
+
 }
 
-func scanUrl(done chan bool, urlsChannel chan string) {
-	resp, err := http.Get(<-urlsChannel)
+func scanUrl(done chan bool, url string) {
+	time.Sleep(time.Second)
+	resp, err := http.Get(url)
 	tools.Check(err)
-	fmt.Printf("%s %s: Response %s\n", time.Now(), resp.Request.URL, resp.Status)
+	fmt.Printf("%s %s: Response %s\n", time.Now().Format("2006-01-02T15:04:05"), url, resp.Status)
 	defer resp.Body.Close()
 	done <- true
 }
