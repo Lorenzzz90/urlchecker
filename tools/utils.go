@@ -12,17 +12,8 @@ func CreatePath(url string) string {
 	fileName = strings.Replace(fileName, "https://", "", -1)
 	fileName = strings.Replace(fileName, ".", "_", -1)
 	fileName = strings.Replace(fileName, "/", "-", -1)
-	path := fmt.Sprintf("%s/%s.txt", today, fileName)
+	path := fmt.Sprintf("tmp/%s/%s.txt", today, fileName)
 	return path
-}
-
-func Check(e error) {
-	if e != nil {
-		// FIXME: "panic" is hard to recover for a program. You need to use recover()
-		// instead bubble up the error by wrapping it with the func fmt.Errof and the %w verb.
-		// plus, this func can be avoided at all and this logic could be spread among the functions and/or methods.
-		panic(e)
-	}
 }
 
 func Today() string {

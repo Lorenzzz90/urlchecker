@@ -9,19 +9,25 @@ import (
 	"Lorenzzz90/urlchecker/tools"
 )
 
-func AsyncScan(urls []string, outputMode byte) {
+func AsyncScan(urls []string, outputMode string) error {
 	done := make(chan bool, len(urls))
 	var writeFile *os.File
 	var err error
 	// FIXME: you used an "if", "elseif", but the "else"?
-	if outputMode == 'd' {
+	// if the output mode is neither 'd' or 'm' there's no need to create a file or a folder so i left the else, is it always wrong to not have an else statement?
+	if outputMode == "Default" {
 		// FIXME: you MUST defer the close func on the file handle.
-		writeFile, err = os.Create(tools.Today() + ".txt")
-		tools.Check(err)
-	} else if outputMode == 'm' {
-		if _, err := os.Stat(tools.Today()); os.IsNotExist(err) {
-			err := os.Mkdir(tools.Today(), os.ModeAppend)
-			tools.Check(err)
+		writeFile, err = os.Create("tmp/" + tools.Today() + ".txt")
+		if err != nil {
+			return fmt.Errorf("err creating folder: %w", err)
+		}
+		defer writeFile.Close()
+	} else if outputMode == "WriteToMultipleFiles" {
+		if _, err := os.Stat("tmp" + tools.Today()); os.IsNotExist(err) {
+			err := os.Mkdir("tmp/"+tools.Today(), os.ModeAppend)
+			if err != nil {
+				return fmt.Errorf("err creating folder: %w", err)
+			}
 		}
 	}
 	for i := 0; i < len(urls); i++ {
@@ -30,23 +36,29 @@ func AsyncScan(urls []string, outputMode byte) {
 	for i := 0; i < len(urls); i++ {
 		<-done
 	}
+	return nil
 }
 
-func scanUrl(done chan bool, url string, outputMode byte, writeFile *os.File) {
+func scanUrl(done chan bool, url string, outputMode string, writeFile *os.File) error {
 	resp, err := http.Get(url)
-	tools.Check(err)
-	if outputMode == 'c' {
+	if err != nil {
+		return fmt.Errorf("err getting url: %w", err)
+	}
+	if outputMode == "WriteToConsole" {
 		fmt.Printf("%s %s: Response %s\n", time.Now().Format("2006-01-02T15:04:05"), url, resp.Status)
-	} else if outputMode == 'd' {
+	} else if outputMode == "Default" {
 		writeFile.WriteString(fmt.Sprintf("%s: Response %s\n", url, resp.Status))
-	} else if outputMode == 'm' {
+	} else if outputMode == "WriteToMultipleFiles" {
 		writeFile, err := os.Create(tools.CreatePath(url))
-		writeFile.WriteString(fmt.Sprintf("%s %s: Response %s\n", time.Now().Format("2006-01-02T15:04:05"), url, resp.Status))
-		tools.Check(err)
+		writeFile.WriteString(fmt.Sprintf("tmp/%s %s: Response %s\n", time.Now().Format("2006-01-02T15:04:05"), url, resp.Status))
+		if err != nil {
+			return fmt.Errorf("err writing to file: %w", err)
+		}
 		defer writeFile.Close()
 	}
 	defer resp.Body.Close()
 	done <- true
+	return nil
 }
 
 /*func AsyncScan(urls []string, multipleFiles bool) {
