@@ -1,19 +1,20 @@
 package tools
 
 import (
-	"fmt"
 	"strings"
 	"time"
 )
 
-func CreatePath(url string) string {
-	today := Today()
-	fileName := fmt.Sprintf("%s_%s", today, url) // TODO usare regexp per bonificare url e usare package filepath
-	fileName = strings.Replace(fileName, "https://", "", -1)
-	fileName = strings.Replace(fileName, ".", "_", -1)
-	fileName = strings.Replace(fileName, "/", "-", -1)
-	path := fmt.Sprintf("tmp/%s/%s.txt", today, fileName)
-	return path
+func CreateFileName(response string) string {
+	parts := strings.Split(response, "www")
+	fileName := parts[1]
+	fileName = strings.Replace(fileName, "/", "", -1)
+	fileName = strings.Replace(fileName, ".", "-", -1)
+	fileName = strings.Replace(fileName, " ", "", -1)
+	fileName = strings.Replace(fileName, ":", "", -1)
+	parts2 := strings.Split(fileName, "Response")
+	fileName = parts2[0]
+	return fileName
 }
 
 func Today() string {
