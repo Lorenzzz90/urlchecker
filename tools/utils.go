@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
+// FIXME: IMO is better to move this pkg below internal as well.
+
 func CreateFileName(response string) string {
+	// TODO: this could be rewritten with a regexp to make it nicer.
 	parts := strings.Split(response, "www")
 	fileName := parts[1]
 	fileName = strings.Replace(fileName, "/", "", -1)
