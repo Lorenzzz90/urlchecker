@@ -17,10 +17,10 @@ func PrintToFile(responses []string) error {
 	writeFile, err := os.Create("../../tmp/" + tools.Today() + ".txt")
 	if err != nil {
 		return fmt.Errorf("err creating txt file: %w", err)
-
 	}
 	defer writeFile.Close()
 	for i := range responses {
+		// FIXME: check for the err
 		writeFile.WriteString(responses[i] + "\n")
 	}
 	return nil

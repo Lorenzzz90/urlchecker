@@ -13,7 +13,9 @@ import (
 )
 
 var (
-	WriteToConsole       *bool = flag.Bool("c", false, "prints output in the console instead of on a file")
+	WriteToConsole *bool = flag.Bool("c", false, "prints output in the console instead of on a file")
+	// FIXME: with "-m" it appends a "-" at the beginning of the filenames.
+	// also the filenames are wrong (e.g. "-amazon-it.txt" should be "amazon.txt")
 	WriteToMultipleFiles *bool = flag.Bool("m", false, "creates a new file for every single url, default: false")
 	useSyncMod           *bool = flag.Bool("s", false, "decides if the program should run in sync or async mode, default: false")
 )
@@ -28,7 +30,8 @@ func main() {
 		_, b, _, _ = runtime.Caller(0)
 		basepath   = filepath.Dir(b)
 	)
-	readFile, err := os.Open(basepath + "./urls.txt")
+	// FIXME: it doesn't find the file. To let it work on Linux I have to remove "."
+	readFile, err := os.Open(basepath + "/urls.txt")
 	if err != nil {
 		fmt.Println("Error reading file urls.txt", err.Error())
 		return
